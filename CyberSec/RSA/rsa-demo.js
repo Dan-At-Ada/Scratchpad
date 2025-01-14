@@ -1,5 +1,6 @@
 import { performance } from 'perf_hooks'; // Import performance hooks for measuring execution time
 import { modPow, modInverse, gcd } from './bigint-helpers.js'; // Import helper functions for modular arithmetic
+import readline from 'readline'; // Import readline module for user input
 
 // SimpleRSA class to demonstrate RSA encryption and decryption
 class SimpleRSA {
@@ -148,6 +149,21 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Function to wait for user input to proceed to the next step
+async function waitForUserInput() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  return new Promise(resolve => {
+    rl.question('Press Enter to continue...', () => {
+      rl.close();
+      resolve();
+    });
+  });
+}
+
 // Main demonstration function
 async function runDemo() {
   console.log("RSA Encryption Demonstration with Larger Primes and Detailed Logging");
@@ -163,7 +179,7 @@ async function runDemo() {
   console.log("Prime number p:", p);
   console.log("Prime number q:", q);
 
-  await delay(3000); // Increased delay
+  await waitForUserInput();
 
   console.log("\nStep 2: Encrypting a message");
   const message = 12345;
@@ -172,14 +188,14 @@ async function runDemo() {
   const encrypted = await rsa.encrypt(message, publicKey);
   console.log("Final Encrypted Message (ciphertext):", encrypted);
 
-  await delay(3000); // Increased delay
+  await waitForUserInput();
 
   console.log("\nStep 3: Decrypting the message");
   const decrypted = await rsa.decrypt(encrypted, privateKey);
   console.log("Final Decrypted Message:", decrypted);
   console.log(String(decrypted));
 
-  await delay(3000); // Increased delay
+  await waitForUserInput();
 
   console.log("\nStep 4: Simulating a factorization attack");
   console.log("This attack is possible due to the relatively small primes used in this demonstration");
@@ -191,7 +207,7 @@ async function runDemo() {
     console.log("Recovered prime number p:", factorP);
     console.log("Recovered prime number q:", factorQ);
 
-    await delay(3000); // Increased delay
+    await waitForUserInput();
 
     console.log("\nStep 5: Reconstructing the private key");
     const reconstructStartTime = performance.now();
@@ -206,7 +222,7 @@ async function runDemo() {
     console.log("Reconstructed Private Key:", crackedPrivateKey);
     console.log(`Private key reconstruction completed in ${(reconstructEndTime - reconstructStartTime).toFixed(3)} milliseconds`);
 
-    await delay(3000); // Increased delay
+    await waitForUserInput();
 
     console.log("\nStep 6: Decrypting the message using the cracked key");
     const crackedDecrypted = await rsa.decrypt(encrypted, crackedPrivateKey);
